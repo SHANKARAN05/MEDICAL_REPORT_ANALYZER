@@ -4,26 +4,34 @@ def calculate_health_score(analysis):
 
     for item in analysis:
 
-        if item["status"] == "HIGH":
-            score -= 5
+        status = str(item.get("status") or "UNKNOWN").upper()
+        flag = str(item.get("flag") or "UNKNOWN").upper()
 
-        elif item["status"] == "LOW":
-            score -= 5
+        if flag == "HIGH":
+            score -= 8
+        elif flag == "LOW":
+            score -= 6
+        elif status == "BAD":
+            score -= 6
+        elif status == "UNKNOWN":
+            score -= 2
 
     if score < 0:
         score = 0
 
     return score
+
+
 def risk_level(score):
 
     if score >= 85:
-        return "Healthy"
+        return "Low"
 
     elif score >= 65:
-        return "Moderate Risk"
+        return "Moderate"
 
     elif score >= 40:
-        return "High Risk"
+        return "High"
 
     else:
         return "Critical"
