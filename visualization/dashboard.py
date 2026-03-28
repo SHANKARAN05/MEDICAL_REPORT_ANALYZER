@@ -23,12 +23,11 @@ def show_dashboard_charts(analysis):
         fig = px.pie(
             values=status_counts.values,
             names=status_counts.index,
-            title="Normal vs Abnormal Results",
+            title="Good vs Bad Results",
             color=status_counts.index,
             color_discrete_map={
-                "NORMAL": "green",
-                "LOW": "blue",
-                "HIGH": "red",
+                "GOOD": "green",
+                "BAD": "red",
                 "UNKNOWN": "gray"
             }
         )
@@ -41,19 +40,22 @@ def show_dashboard_charts(analysis):
 
         st.subheader("Abnormal Parameters")
 
-        abnormal = df[df["status"] != "NORMAL"]
+        abnormal = df[df["status"] == "BAD"]
 
         if len(abnormal) > 0:
+
+            color_col = "flag" if "flag" in abnormal.columns else "status"
 
             fig = px.bar(
                 abnormal,
                 x="parameter",
                 y="value",
-                color="status",
-                title="Abnormal Lab Values",
+                color=color_col,
+                title="Bad Lab Values",
                 color_discrete_map={
                     "LOW": "blue",
-                    "HIGH": "red"
+                    "HIGH": "red",
+                    "BAD": "red"
                 }
             )
 
@@ -81,9 +83,8 @@ def show_dashboard_charts(analysis):
         color="status",
         title="Patient Lab Values",
         color_discrete_map={
-            "NORMAL": "green",
-            "LOW": "blue",
-            "HIGH": "red",
+            "GOOD": "green",
+            "BAD": "red",
             "UNKNOWN": "gray"
         }
     )

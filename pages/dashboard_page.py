@@ -6,23 +6,33 @@ def show_dashboard(analysis):
 
     st.header("📊 Patient Health Dashboard")
 
+    if not analysis:
+        st.info("Upload a medical report to view dashboard insights.")
+        return
+
     df = pd.DataFrame(analysis)
 
     total_tests = len(df)
-    abnormal_tests = len(df[df["status"] != "NORMAL"])
-    normal_tests = len(df[df["status"] == "NORMAL"])
+    good_tests = len(df[df["status"] == "GOOD"])
+    bad_tests = len(df[df["status"] == "BAD"])
+    unknown_tests = len(df[df["status"] == "UNKNOWN"])
 
-    col1, col2, col3 = st.columns(3)
+    col1, col2, col3, col4 = st.columns(4)
 
     col1.metric("Total Tests", total_tests)
-    col2.metric("Normal", normal_tests)
-    col3.metric("Abnormal", abnormal_tests)
+    col2.metric("Good", good_tests)
+    col3.metric("Bad", bad_tests)
+    col4.metric("Unknown", unknown_tests)
 
-    st.subheader("⚠ Abnormal Results")
+    st.subheader("⚠ Bad Results")
 
-    abnormal = df[df["status"] != "NORMAL"]
+    abnormal = df[df["status"] == "BAD"]
 
     if len(abnormal) > 0:
         st.dataframe(abnormal, use_container_width=True)
     else:
-        st.success("All lab values are normal.")
+        st.success("No bad values detected from available ranges.")
+
+
+analysis_data = st.session_state.get("analysis", [])
+show_dashboard(analysis_data)

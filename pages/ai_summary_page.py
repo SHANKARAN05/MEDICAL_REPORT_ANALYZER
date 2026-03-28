@@ -5,6 +5,16 @@ def show_ai_summary(analysis):
 
     st.header("🤖 AI Doctor Summary")
 
-    explanation = generate_explanation(analysis)
+    if not analysis:
+        st.info("Upload a medical report to generate an AI summary.")
+        return
 
-    st.write(explanation)
+    try:
+        explanation = generate_explanation(analysis)
+        st.write(explanation)
+    except Exception as exc:
+        st.error(f"Unable to generate AI summary: {exc}")
+
+
+analysis_data = st.session_state.get("analysis", [])
+show_ai_summary(analysis_data)
